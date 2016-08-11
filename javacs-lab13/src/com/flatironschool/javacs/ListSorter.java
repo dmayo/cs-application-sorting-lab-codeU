@@ -53,18 +53,45 @@ public class ListSorter<T> {
 		list.addAll(sorted);
 	}
 
-	/**
-	 * Sorts a list using a Comparator object.
-	 * 
-	 * Returns a list that might be new.
-	 * 
-	 * @param list
-	 * @param comparator
-	 * @return
-	 */
+
 	public List<T> mergeSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+		int length = list.size();
+		int mid=length/2;
+		if(length<=1){
+			return list;
+		}
+		List<T> left = new LinkedList<T>(list.subList(0, mid));
+    	List<T> right = new LinkedList<T>(list.subList(mid, length));
+    	List<T> leftMerge=mergeSort(left,comparator);
+    	List<T> rightMerge=mergeSort(right,comparator);
+
+    	return merge(leftMerge, rightMerge, comparator);
+	}
+
+	private List<T> merge(List<T> left, List<T> right, Comparator<T> comparator) {
+		List<T> result = new LinkedList<T>();
+		int total = left.size() + right.size();
+		for (int i=0; i<total; i++) {
+			result.add(compareList(left, right, comparator).remove(0));
+		}
+		return result;
+	}
+
+	private List<T> compareList(List<T> left, List<T> right, Comparator<T> comparator) {
+		if (left.size()==0) {
+			return right;
+		}
+		if (right.size()==0) {
+			return left;
+		}
+		int cmp = comparator.compare(left.get(0), right.get(0));
+		if (cmp > 0) {
+			return right;
+		}
+		if (cmp < 0) {
+			return left;
+		}
+		return left;
 	}
 
 	/**
@@ -75,7 +102,13 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public void heapSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
+        PriorityQueue<T> q = new PriorityQueue<T>(list.size(),comparator);
+        q.addAll(list);
+        //extract root of heap in a loop
+        list.clear();
+        while(!q.isEmpty()){
+        	list.add(q.poll());
+        }
 	}
 
 	
@@ -89,8 +122,12 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> topK(int k, List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+        heapSort(list,comparator);
+        List<T> result = new LinkedList<T>();
+        for(int i=k;i>0;i--){
+        	result.add(list.get(list.size()-i));
+        }
+        return result;
 	}
 
 	
